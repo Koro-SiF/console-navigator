@@ -1,6 +1,6 @@
 # Navigator
 
-A simple in console file-explorer. Works only on Windows since it used OS code.
+A simple in console file-explorer. Works only on Windows since it uses OS code.
 
 Currently has only 6 command:
 
