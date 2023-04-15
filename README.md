@@ -1,4 +1,4 @@
-# Navigator
+# Console Navigator
 
 A simple in console file-explorer. Works only on Windows since it uses OS code.
 
