@@ -9,13 +9,14 @@
 using namespace std;
 
 // Value-Defintions of the different String values
-enum StringValue{ DIR,
+enum StringValue{ UNDEFINED, 
+                    DIR,
                     CD,
                     MKDIR,
                     DEL,
                     OPEN,
-                    EXIT,
-                    UNDEFINED };
+                    TOUCH,
+                    EXIT };
 
 // struct to save the last write time of files and folders
 struct lastwritetime { string dmyTime; string hmsTime;}; 
@@ -88,7 +89,9 @@ bool change_directory(string dir) {
     string current_dir = get_current_directory();
     if (SetCurrentDirectory((current_dir + "\\" + dir).c_str())) {
         return true;
-    }
+    } else if (SetCurrentDirectory(dir.c_str())) {
+        return true;
+    } else
     return false;
 }
 
@@ -119,6 +122,18 @@ bool open_file_or_folder(string file_or_folder_name) {
     return false;
 }
 
+//function to create a file
+bool create_file(string filename) {
+    string current_dir = get_current_directory();
+    HANDLE file_handle = CreateFile((current_dir + "\\" + filename).c_str(), 
+        GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (file_handle == INVALID_HANDLE_VALUE) {
+        return false;
+    }
+    CloseHandle(file_handle);
+    return true;
+}
+
 // User input
 static char userInput[_MAX_PATH];
 
@@ -126,16 +141,15 @@ static char userInput[_MAX_PATH];
 static void Initialize();
 
 int main() {
-    struct stat result;
     string userInput;
     string dir;
     string filename;
-    string folder_name;
+    string foldername;
     vector<string> contents;
 
     Initialize();
 
-    while (true) {
+    while (1) {
         //get the current directory
         dir = get_current_directory();
         cout << dir << "> ";
@@ -162,8 +176,8 @@ int main() {
 
             //create a folder
             case MKDIR:
-                cin >> folder_name;
-                if (create_folder(folder_name)) {
+                cin >> foldername;
+                if (create_folder(foldername)) {
                     cout << "Folder created successfully.\n";
                 } else {
                     cout << "Error creating folder.\n";
@@ -190,12 +204,25 @@ int main() {
                 }
                 break;
             
+            //create a file:
+            case TOUCH:
+                cin >> filename;
+                if (create_file(filename)) {
+                    cout << "File created successfully.\n";
+                } else {
+                    cout << "Error creating file";
+                }
+                break;
+            
+            //if user inputs unknown command
+            case UNDEFINED:
+                cout << userInput + ": The term " + userInput + " is not recognised as a name of cmdlet, function, script file, or executable program." << endl << "Check the spelling of the name, or if a path was included, verify that the path is correct and try again.\n";
+                break;
+            
             //exit the program
             case EXIT:
                 return 0;
             
-            default:
-                cout << userInput + ": The term " + userInput + " is not recognised as a name of cmdlet, function, script file, or executable program." << endl << "Check the spelling of the name, or if a path was included, verify that the path is correct and try again.";
         }
 
     }
@@ -203,15 +230,17 @@ int main() {
 }
 
 void Initialize() {
+        mapStringValues[""] = UNDEFINED;
         mapStringValues["dir"] = DIR;
         mapStringValues["cd"] = CD;
         mapStringValues["mkdir"] = MKDIR;
         mapStringValues["del"] = DEL;
         mapStringValues["open"] = OPEN;
+        mapStringValues["touch"] = TOUCH;
         mapStringValues["exit"] = EXIT;
 
-        cout << "mapStringValues contains "
-            << mapStringValues.size()
-            << " entries." << endl;
+        // cout << "mapStringValues contains "
+        //     << mapStringValues.size() - 1
+        //     << " entries." << endl;
     }
   
