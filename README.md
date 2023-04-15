@@ -2,7 +2,7 @@
 
 A simple in console file-explorer. Works only on Windows since it uses OS code.
 
-Currently has only 6 command:
+Currently has only 7 command:
 
 - **"dir"** lists all files and folders in a directory,
 
@@ -13,6 +13,8 @@ Currently has only 6 command:
 - **"del"** deletes files/folders,
 
 - **"open"** will externally open files. For folders it opens them in the file exporer app not in the console,
+
+- **"touch"** is to create files.
 
 - **"exit"** end the program.
 
